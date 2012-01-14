@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E1D50AB4-E1CD-4C31-AED5-E957D2E6B01F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>netapi32.lib;mpr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)fgdump.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)fgdump.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>netapi32.lib;mpr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)fgdump.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CacheDumpControl.cpp" />
+    <ClCompile Include="ErrorHandler.cpp" />
+    <ClCompile Include="fgdump.cpp" />
+    <ClCompile Include="HostDumper.cpp" />
+    <ClCompile Include="Impersonator.cpp" />
+    <ClCompile Include="LogBase.cpp" />
+    <ClCompile Include="LogFailedWriter.cpp" />
+    <ClCompile Include="LogWriter.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="McAfeeControl.cpp" />
+    <ClCompile Include="NetUse.cpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProtectedStorageControl.cpp" />
+    <ClCompile Include="PWDumpControl.cpp" />
+    <ClCompile Include="RegQuery.cpp" />
+    <ClCompile Include="ResourceLoader.cpp" />
+    <ClCompile Include="ServiceControl.cpp" />
+    <ClCompile Include="ShareFinder.cpp" />
+    <ClCompile Include="SophosControl.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StringArray.cpp" />
+    <ClCompile Include="SymantecAVControl.cpp" />
+    <ClCompile Include="TrendControl.cpp" />
+    <ClCompile Include="XGetopt.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AVStatus.h" />
+    <ClInclude Include="CacheDumpControl.h" />
+    <ClInclude Include="ErrorHandler.h" />
+    <ClInclude Include="fgdump.h" />
+    <ClInclude Include="HostDumper.h" />
+    <ClInclude Include="Impersonator.h" />
+    <ClInclude Include="LogBase.h" />
+    <ClInclude Include="LogFailedWriter.h" />
+    <ClInclude Include="LogWriter.h" />
+    <ClInclude Include="McAfeeControl.h" />
+    <ClInclude Include="NetUse.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="ProtectedStorageControl.h" />
+    <ClInclude Include="PWDumpControl.h" />
+    <ClInclude Include="RegQuery.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceLoader.h" />
+    <ClInclude Include="ServiceControl.h" />
+    <ClInclude Include="ShareFinder.h" />
+    <ClInclude Include="SophosControl.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringArray.h" />
+    <ClInclude Include="SymantecAVControl.h" />
+    <ClInclude Include="TrendControl.h" />
+    <ClInclude Include="XGetopt.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="fgdump.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cachedump.exe" />
+    <None Include="cachedump64.exe" />
+    <None Include="fgexec.exe" />
+    <None Include="foosvc.exe" />
+    <None Include="footemp.dll" />
+    <None Include="imokav.exe" />
+    <None Include="lsadump2.exe" />
+    <None Include="lsremora.dll" />
+    <None Include="lsremora64.dll" />
+    <None Include="lstarget.dll" />
+    <None Include="pstgdump.exe" />
+    <None Include="PwDump.exe" />
+    <None Include="servpw.exe" />
+    <None Include="servpw64.exe" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
