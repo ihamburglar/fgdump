@@ -49,13 +49,16 @@ bool ShareFinder::EnumerateShares(char* szServer)
 
 	::ZeroMemory(server, MAX_PATH);
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
-	_snprintf(szServerWithSlashes, MAX_PATH, "\\\\%s", szServer);
-	mbstowcs(server, szServerWithSlashes, strlen(szServerWithSlashes));
+	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	
+	size_t requiredSize = 0;
+	
+	mbstowcs_s(&requiredSize, server, MAX_PATH, szServerWithSlashes, strlen(szServerWithSlashes));
 
 	do
 	{
 		// Fuck Microsoft and it's lame-ass unicode crap
-		res = NetShareEnum((LPSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
+		res = NetShareEnum((LPWSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
 		if(res == ERROR_SUCCESS || res == ERROR_MORE_DATA)
 		{
 			p = BufPtr;
@@ -90,8 +93,11 @@ bool ShareFinder::BindUploadShareToLocalDrive(char* szServer, int nBufferSize, c
 	::ZeroMemory(server, MAX_PATH);
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
 	::ZeroMemory(*lplpPhysicalPath, nBufferSize);
-	_snprintf(szServerWithSlashes, MAX_PATH, "\\\\%s", szServer);
-	mbstowcs(server, szServerWithSlashes, strlen(szServerWithSlashes));
+	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	
+	size_t requiredSize = 0;
+	
+	mbstowcs_s(&requiredSize, server, MAX_PATH, szServerWithSlashes, strlen(szServerWithSlashes));
 	memset(lpszLocalDrive, 0, 3);
 
 	// This needs to be protected with a critical section, since multiple threads may try to get a free
@@ -114,25 +120,30 @@ bool ShareFinder::BindUploadShareToLocalDrive(char* szServer, int nBufferSize, c
 	do
 	{
 		// Fuck Microsoft and it's lame-ass unicode crap
-		res = NetShareEnum((LPSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
+		res = NetShareEnum((LPWSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
 		if(res == ERROR_SUCCESS || res == ERROR_MORE_DATA)
 		{
 			p = BufPtr;
 			for(i = 1; i <= er; i++)
 			{
 				::ZeroMemory(szTemp, MAX_PATH);
-				wcstombs(szTemp, (LPWSTR)(p->shi502_netname), MAX_PATH);
+
+				size_t requiredSize2 = 0;
+
+				wcstombs_s(&requiredSize2, szTemp, MAX_PATH, (LPWSTR)(p->shi502_netname), MAX_PATH);
 
 				// Look for shares that are not SYSVOL or NETLOGON, and that have a physical path
-				if (stricmp(szTemp, "SYSVOL") != 0 && stricmp(szTemp, "NETLOGON") != 0 && wcslen((LPWSTR)(p->shi502_path)) > 0)
+				if (_stricmp(szTemp, "SYSVOL") != 0 && _stricmp(szTemp, "NETLOGON") != 0 && wcslen((LPWSTR)(p->shi502_path)) > 0)
 				{
 					// If this is a potentially workable share, bind the drive and try uploading something
 					if (BindDrive(lpszLocalDrive, szServerWithSlashes, szTemp))
 					{
 						// Success!
 						// Copy the physical path to the out variable
-						wcstombs(szTemp, (LPWSTR)(p->shi502_path), MAX_PATH);
-						strncpy(*lplpPhysicalPath, szTemp, nBufferSize);
+						size_t requiredSize3 = 0;
+
+						wcstombs_s(&requiredSize3, szTemp, MAX_PATH, (LPWSTR)(p->shi502_path), MAX_PATH);
+						strncpy_s(*lplpPhysicalPath, MAX_PATH, szTemp, nBufferSize);
 						bBound = true;
 						break;
 					}
@@ -169,36 +180,43 @@ bool ShareFinder::GetAvailableWriteableShare(char* szServer, int nPhysicalBuffer
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
 	::ZeroMemory(*lplpPhysicalPath, nPhysicalBufferSize);
 	::ZeroMemory(*lplpUNCPath, nUNCPathSize);
-	_snprintf(szServerWithSlashes, MAX_PATH, "\\\\%s", szServer);
-	mbstowcs(server, szServerWithSlashes, strlen(szServerWithSlashes));
+	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	
+	size_t requiredSize = 0;
+	
+	mbstowcs_s(&requiredSize, server, MAX_PATH, szServerWithSlashes, strlen(szServerWithSlashes));
 
 	do
 	{
 		// Fuck Microsoft and it's lame-ass unicode crap
-		res = NetShareEnum((LPSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
+		res = NetShareEnum((LPWSTR)server, 502, (LPBYTE*)&BufPtr, -1, &er, &tr, &resume);
 		if(res == ERROR_SUCCESS || res == ERROR_MORE_DATA)
 		{
 			p = BufPtr;
 			for(i = 1; i <= er; i++)
 			{
 				::ZeroMemory(szTemp, MAX_PATH);
-				wcstombs(szTemp, (LPWSTR)(p->shi502_netname), MAX_PATH);
+				size_t requiredSize2 = 0;
+
+				wcstombs_s(&requiredSize, szTemp, MAX_PATH, (LPWSTR)(p->shi502_netname), MAX_PATH);
 
 				// Look for shares that are not SYSVOL or NETLOGON, and that have a physical path
-				if (((p->shi502_type == STYPE_DISKTREE) || (p->shi502_type == STYPE_SPECIAL)) /*&& stricmp(szTemp, "QS1LPT3") != 0*/ && stricmp(szTemp, "SYSVOL") != 0 && stricmp(szTemp, "NETLOGON") != 0 && wcslen((LPWSTR)(p->shi502_path)) > 0)
+				if (((p->shi502_type == STYPE_DISKTREE) || (p->shi502_type == STYPE_SPECIAL)) /*&& stricmp(szTemp, "QS1LPT3") != 0*/ && _stricmp(szTemp, "SYSVOL") != 0 && _stricmp(szTemp, "NETLOGON") != 0 && wcslen((LPWSTR)(p->shi502_path)) > 0)
 				{
 					// If this is a potentially workable share, try uploading something
 					memset(szTemp2, 0, MAX_PATH);
-					_snprintf(szTemp2, MAX_PATH, "%s\\%s", szServerWithSlashes, szTemp);
+					_snprintf_s(szTemp2, MAX_PATH, strlen(szServerWithSlashes)+1+strlen(szTemp), "%s\\%s", szServerWithSlashes, szTemp);
 					if (CanUpload(szTemp2))
 					{
 						// Success!
 						// Copy the physical path to the out variable
-						wcstombs(szTemp, (LPWSTR)(p->shi502_path), MAX_PATH);
-						strncpy(*lplpPhysicalPath, szTemp, nPhysicalBufferSize);
+						size_t requiredSize3 = 0;
+
+						wcstombs_s(&requiredSize3, szTemp, MAX_PATH, (LPWSTR)(p->shi502_path), MAX_PATH);
+						strncpy_s(*lplpPhysicalPath, MAX_PATH, szTemp, nPhysicalBufferSize);
 
 						// Also copy the UNC path to the out variable
-						strncpy(*lplpUNCPath, szTemp2, nUNCPathSize);
+						strncpy_s(*lplpUNCPath, MAX_PATH, szTemp2, nUNCPathSize);
 						bFound = true;
 						break;
 					}
@@ -226,7 +244,7 @@ bool ShareFinder::CanUpload(char* szUploadPath)
 
 	::ZeroMemory(&nr, sizeof(NETRESOURCE));
 	::ZeroMemory(szTempFilename, MAX_PATH);
-	_snprintf(szTempFilename, MAX_PATH, "%s\\test.fgdump", szUploadPath);
+	_snprintf_s(szTempFilename, MAX_PATH, strlen(szUploadPath)+12, "%s\\test.fgdump", szUploadPath);
 
 	std::ofstream outputFile(szTempFilename, std::ios::out | std::ios::trunc);
 	outputFile.write("success", 7);
@@ -258,7 +276,7 @@ bool ShareFinder::BindDrive(char* szDrive, char* szServer, char* szShare)
 
 	::ZeroMemory(&nr, sizeof(NETRESOURCE));
 	::ZeroMemory(szTemp, MAX_PATH);
-	_snprintf(szTemp, MAX_PATH, "%s\\%s", szServer, szShare);
+	_snprintf_s(szTemp, MAX_PATH, strlen(szServer)+1+strlen(szShare), "%s\\%s", szServer, szShare);
 
 	nr.dwType = RESOURCETYPE_ANY;
 	nr.lpRemoteName = szTemp;
@@ -289,7 +307,7 @@ bool ShareFinder::BindDrive(char* szDrive, char* szServer, char* szShare)
 	 
 	Log.CachedReportError(m_nCacheID, DEBUG, "The drive %s is bound to %s, testing write access...\n", szDrive, szShare);
 	::ZeroMemory(szTempFilename, MAX_PATH);
-	_snprintf(szTempFilename, MAX_PATH, "%s\\%s.fgdump", szDrive, szServer);
+	_snprintf_s(szTempFilename, MAX_PATH, strlen(szDrive)+1+strlen(szServer)+7, "%s\\%s.fgdump", szDrive, szServer);
 
 	std::ofstream outputFile(szTempFilename, std::ios::out | std::ios::trunc);
 	outputFile.write("success", 7);
@@ -326,7 +344,7 @@ char ShareFinder::GetUnusedDriveLetter()
 
 	for (int i = 67; i <= 90; i++)	// 'C' through 'Z'
 	{
-		_snprintf(szTemp, 2, "%c:", i);
+		_snprintf_s(szTemp, 2, 2, "%c:", i);
 		if (GetDriveType(szTemp) == DRIVE_NO_ROOT_DIR)
 		{
 			// This drive should work

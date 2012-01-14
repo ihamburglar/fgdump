@@ -74,7 +74,7 @@ HANDLE Process::CreateChildProcess(const char* lpszCommandLine, char* lpszArgume
 	STARTUPINFO siStartInfo;
 	BOOL bFuncRetn = FALSE; 
 	char szCurrentProcessDir[MAX_PATH + 1];
-	char* szLastSlash;
+	const char* szLastSlash;
 	size_t nCurrentDirLen;
 
 	ZeroMemory(szCurrentProcessDir, MAX_PATH + 1);
@@ -82,7 +82,7 @@ HANDLE Process::CreateChildProcess(const char* lpszCommandLine, char* lpszArgume
 	if (szLastSlash != NULL)
 	{
 		nCurrentDirLen = szLastSlash - lpszCommandLine;
-		strncpy(szCurrentProcessDir, lpszCommandLine, nCurrentDirLen);
+		strncpy_s(szCurrentProcessDir, nCurrentDirLen, lpszCommandLine, nCurrentDirLen);
 	}
 	// Set up members of the PROCESS_INFORMATION structure. 
 	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));

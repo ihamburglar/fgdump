@@ -50,7 +50,7 @@ int StringArray::Add(char* lpszString)
 		pFirstString = new STRINGENTRY;
 		pFirstString->lpszString = new char[nLen + 1];
 		memset(pFirstString->lpszString, 0, nLen + 1);
-		strncpy(pFirstString->lpszString, lpszString, nLen);
+		strncpy_s(pFirstString->lpszString, nLen, lpszString, nLen);
 		pFirstString->pNext = NULL;
 		pCurrentString = pFirstString;
 	}
@@ -59,7 +59,7 @@ int StringArray::Add(char* lpszString)
 		STRINGENTRY* pTemp = new STRINGENTRY;
 		pTemp->lpszString = new char[nLen + 1];
 		memset(pTemp->lpszString, 0, nLen + 1);
-		strncpy(pTemp->lpszString, lpszString, nLen);
+		strncpy_s(pTemp->lpszString, nLen, lpszString, nLen);
 		pTemp->pNext = NULL;
 		pCurrentString->pNext = pTemp;
 		pCurrentString = pTemp;
