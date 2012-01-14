@@ -210,7 +210,7 @@ void WINAPI ServiceMain(DWORD argc, LPTSTR argv[])
 				{
 					char szError[256];
 					::ZeroMemory(szError, 256);
-					_snprintf(szError, 256, "Exec failed, GetLastError returned %d\n", GetLastError());
+					_snprintf_s(szError, 256, sizeof(GetLastError())+37, "Exec failed, GetLastError returned %d\n", GetLastError());
 					WriteFile(hPipe, szError, strlen(szError), &cbTotalBytes, NULL);
 				}
 
@@ -240,9 +240,9 @@ int RunClient(char* szServer, char* szCommand, char* szArguments)
 	::ZeroMemory(chBuf, BUFSIZE);
 	
 	if (szArguments == NULL)
-        _snprintf(szOutputBuffer, 2 * MAX_PATH, "%s", szCommand);
+        _snprintf_s(szOutputBuffer, 2 * MAX_PATH, strlen(szCommand), "%s", szCommand);
 	else
-        _snprintf(szOutputBuffer, 2 * MAX_PATH, "%s||%s", szCommand, szArguments);
+        _snprintf_s(szOutputBuffer, 2 * MAX_PATH, strlen(szCommand)+strlen(szArguments)+2, "%s||%s", szCommand, szArguments);
 
 	bSuccess = CallNamedPipe(g_szPipeName, szOutputBuffer, strlen(szOutputBuffer), (void*)chBuf, BUFSIZE, &cbRead, NULL);
 	if (!bSuccess)
@@ -305,7 +305,7 @@ int _tmain(int argc, char* argv[])
 				{
 					printf("WARNING: Pipe name is greater than MAX_PATH characters, name may be truncated\n");
 				}
-				strncpy(szPipeTemp, optarg, 50);
+				strncpy_s(szPipeTemp, 51, optarg, 50);
 				nStartParams += 2;	// move start parameters out by 2
 				break;
 			default:
@@ -317,7 +317,7 @@ int _tmain(int argc, char* argv[])
 		if (strlen(szPipeTemp) <= 0)
 		{
 			// Use a default pipe name
-			strncpy(szPipeTemp, DEFAULT_PIPE, 50);
+			strncpy_s(szPipeTemp, 51, DEFAULT_PIPE, 50);
 		}
 	}
 	else
@@ -328,7 +328,7 @@ int _tmain(int argc, char* argv[])
 
 	if (!bRunClient)
 	{
-		_snprintf(g_szPipeName, MAX_PATH, PIPE_FORMAT, ".", szPipeTemp);
+		_snprintf_s(g_szPipeName, MAX_PATH, strlen(PIPE_FORMAT)-2+1+strlen(szPipeTemp), PIPE_FORMAT, ".", szPipeTemp);
 
 		// Do the service thing
 		SERVICE_TABLE_ENTRY svcTable[] = { { _T(SERVICE_NAME), ServiceMain }, { NULL, NULL } };
@@ -340,7 +340,7 @@ int _tmain(int argc, char* argv[])
 	}
 	else
 	{
-		_snprintf(g_szPipeName, MAX_PATH, PIPE_FORMAT, argv[nStartParams], szPipeTemp);
+		_snprintf_s(g_szPipeName, MAX_PATH, strlen(PIPE_FORMAT)-2+strlen(argv[nStartParams])+strlen(szPipeTemp), PIPE_FORMAT, argv[nStartParams], szPipeTemp);
 
 		if ((argc - nStartParams) > 2) // Have parameters to pass to the exe to run
 		{
@@ -349,8 +349,8 @@ int _tmain(int argc, char* argv[])
 
 			for (int i = nStartParams + 2; i < argc; i++)
 			{
-				strcat(szParams, " ");
-				strcat(szParams, (char*)argv[i]);
+				strcat_s(szParams, MAX_PATH, " ");
+				strcat_s(szParams, MAX_PATH, (char*)argv[i]);
 			}
 			
 			return RunClient(argv[nStartParams], argv[nStartParams + 1], szParams);

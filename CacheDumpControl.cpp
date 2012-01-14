@@ -51,13 +51,13 @@ bool CacheDumpControl::Execute(const char* lpszPSExecPath, const char* lpszDumpP
 		nArgSize = _scprintf(lpszCmdLineFormat, lpszDumpPath);
 		lpszStopCmdLine = new char[nArgSize + 1];
 		memset(lpszStopCmdLine, 0, nArgSize + 1);
-		_snprintf_s(lpszStopCmdLine, nArgSize, strlen(lpszDumpPath), lpszCmdLineFormat, lpszDumpPath);
+		_snprintf_s(lpszStopCmdLine, nArgSize, strlen(lpszCmdLineFormat)-1+strlen(lpszDumpPath), lpszCmdLineFormat, lpszDumpPath);
 
 		// Now set the parameters
 		lpszCmdLineFormat = " -v";
 		lpszParams = new char[nArgSize + 1];
 		memset(lpszParams, 0, nArgSize + 1);
-		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-2, lpszCmdLineFormat);
+		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-1, lpszCmdLineFormat);
 	}
 	else
 	{
@@ -73,7 +73,7 @@ bool CacheDumpControl::Execute(const char* lpszPSExecPath, const char* lpszDumpP
 		nArgSize = _scprintf(lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
 		lpszParams = new char[nArgSize + 1];
 		memset(lpszParams, 0, nArgSize + 1);
-		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-4+strlen(lpszPipeName)+strlen(lpszMachine)+strlen(lpszDumpPath), lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
+		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-3+strlen(lpszPipeName)+strlen(lpszMachine)+strlen(lpszDumpPath), lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
 	}
 
 	try

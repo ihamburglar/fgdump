@@ -49,7 +49,7 @@ bool ShareFinder::EnumerateShares(char* szServer)
 
 	::ZeroMemory(server, MAX_PATH);
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
-	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	_snprintf_s(szServerWithSlashes, MAX_PATH, 2+strlen(szServer), "\\\\%s", szServer);
 	
 	size_t requiredSize = 0;
 	
@@ -93,7 +93,7 @@ bool ShareFinder::BindUploadShareToLocalDrive(char* szServer, int nBufferSize, c
 	::ZeroMemory(server, MAX_PATH);
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
 	::ZeroMemory(*lplpPhysicalPath, nBufferSize);
-	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	_snprintf_s(szServerWithSlashes, MAX_PATH, 2+strlen(szServer), "\\\\%s", szServer);
 	
 	size_t requiredSize = 0;
 	
@@ -180,7 +180,7 @@ bool ShareFinder::GetAvailableWriteableShare(char* szServer, int nPhysicalBuffer
 	::ZeroMemory(szServerWithSlashes, MAX_PATH);
 	::ZeroMemory(*lplpPhysicalPath, nPhysicalBufferSize);
 	::ZeroMemory(*lplpUNCPath, nUNCPathSize);
-	_snprintf_s(szServerWithSlashes, MAX_PATH, strlen(szServer), "\\\\%s", szServer);
+	_snprintf_s(szServerWithSlashes, MAX_PATH, 2+strlen(szServer), "\\\\%s", szServer);
 	
 	size_t requiredSize = 0;
 	
