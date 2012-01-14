@@ -1,0 +1,12 @@
+** fgexec- A support service for fgdump **
+Written by fizzgig (fizzgig@foofus.net)
+
+Greets to all my fellow Foofites: j0m0-Kun (who is the inspiration for this program), 
+phenfen, omi, fade, pmonkey, grunch and of course our namesake foofus.
+
+The original version of fgdump used psservice to perform some of its work. 
+After reading the license agreement for that program, I determined that
+doing so was in violation of the EULA, so I abandoned that and created fgexec. FGExec
+just performs the task of executing a file on a remote host, it's certainly nothing fancy.
+
+--fizzgig

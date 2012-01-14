@@ -1,0 +1,49 @@
+** pstgdump- A utility for dumping protected storage on Windows 2000/XP/2003 machines **
+Written by fizzgig (fizzgig@foofus.net)
+
+Licensed under the GPL v2
+You are welcome to redistribute or modify these works, subject to GPL restrictions.
+See the COPYING file for more information.
+
+Greets to all my fellow Foofites: j0m0-Kun, phenfen, omi, fade, pmonkey, grunch and of 
+course our namesake foofus.
+
+More information: http://www.foofus.net/fizzgig
+
+pstgdump reveals interesting information stored in "protected storage" on Win2K, XP and 
+2003. Despite it's marketing name, "protected" storage is really anything but protected.
+The only thing that makes it slightly protected is that it's associated with a user's
+profile, and you need a fairly poorly-documented API to read it. Much of the data
+stored within, however, is stored in clear-text. Brilliant. Admittedly, some data (such
+as Outlook Express passwords) are encrypted, but without salt, so decryption is as 
+simply as calling CryptUnprotectData with the default NULL parameters.
+
+An additional feature is listing "IdentitiesPass" information, which technically is not
+a protected storage item, but nonetheless other similar tools show this info, so who am
+I to break rank on this. :)
+
+The parameters to it are very simple. In the most basic case, simply log on interactively
+and run the executable with no parameters. Use the "-h" option to see other options. The
+"-u" and "-p" options are primarily intended for embedding within scripts and other 
+programs (like fgdump). 
+
+Some of this code comes from an example shown on The Code Project at:
+
+http://www.codeproject.com/tools/HirPStorage.asp
+
+While I do not want to disparage the hard work of this person, a lot of things did not
+work very well for me, and I found the code quite hard to read. Nonetheless, some of it
+ended up in pstgdump with some enhancements. Other parts were obtained through what I 
+will only refer to as "other means". :) Some of it, quite frankly, is semi-educated
+guessing, so please inform me of any problems you might have while running this.
+
+Please let me know if this is useful to you, and I welcome (constructive) comments and
+suggestions at fizzgig@foofus.net.
+
+I, nor foofus.net, can take any responsibility for misuse of this program, nor can I
+guarantee that it will not have adverse affects on certain hosts. By using this program,
+you assume any and all risk associated with the execution of the program, including 
+but not limited to damage to a system or data loss. In other words,if you break 
+someone's stuff, don't come crying to me. :)
+
+--fizzgig

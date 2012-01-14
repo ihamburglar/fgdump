@@ -1,0 +1,8 @@
+Cachedump 1.1
+
+1.1:
+	- bug fix
+	- display domain name & domain dns
+
+1.0:
+	- first public release
