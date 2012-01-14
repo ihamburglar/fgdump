@@ -281,9 +281,9 @@ void main(DWORD argc, CHAR *argv[])
 	if (!myService) {
 		if ( GetLastError() == 1060 ) 
 		{
-			strcpy(path, "\"");
+			strcpy_s(path, 1, "\"");
 			GetModuleFileName(0, path + sizeof(path[0]), (sizeof(path) - sizeof(path[0])) / sizeof(path[0]));
-			strcat(path, "\" -s");
+			strcat_s(path, 4, "\" -s");
 			VERBOSE( printf( "Service not found. Installing CacheDump Service (%s)\n", path ); );
 		}
 		myService = CreateService( scm, SERVICE_NAME, SERVICE_NAME,	SERVICE_ALL_ACCESS,

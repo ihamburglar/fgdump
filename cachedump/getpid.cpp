@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include "getpid.h"
 
-typedef DWORD NTSTATUS;
+//typedef DWORD NTSTATUS;
 
 typedef struct 
 {
