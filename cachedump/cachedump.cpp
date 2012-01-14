@@ -41,7 +41,7 @@
 #include "md5.h"
 #include "rc4.h"
 
-#include "cacheDump.h"
+#include "cachedump.h"
 
 #pragma comment(lib, "Advapi32.lib" )
 
