@@ -76,7 +76,7 @@ BOOL ProtectedStorage::EnumOutlookExpressAccounts(void)
 	LONG lResult;
 	DWORD type = REG_BINARY;
 
-	strncpy(skey, OUTLOOK_KEY, MAX_KEY_SIZE);
+	strncpy_s(skey, MAX_KEY_SIZE, OUTLOOK_KEY, MAX_KEY_SIZE);
 	lResult = RegOpenKeyEx(HKEY_CURRENT_USER, (LPCTSTR)skey, 0, KEY_ALL_ACCESS, &hkey);
 
 	if(ERROR_SUCCESS != lResult)
@@ -89,9 +89,9 @@ BOOL ProtectedStorage::EnumOutlookExpressAccounts(void)
 	{
 		dwKeyLen = MAX_KEY_SIZE;
 		nEnumResult = RegEnumKeyEx(hkey, i, name, &dwKeyLen, NULL, NULL, NULL, &timeLastWrite);
-		strncpy(skey, OUTLOOK_KEY, MAX_KEY_SIZE - strlen(OUTLOOK_KEY) - 2);
-		strcat(skey, "\\");
-		strcat(skey, name);
+		strncpy_s(skey, MAX_KEY_SIZE, OUTLOOK_KEY, MAX_KEY_SIZE - strlen(OUTLOOK_KEY) - 2);
+		strcat_s(skey, MAX_KEY_SIZE, "\\");
+		strcat_s(skey, MAX_KEY_SIZE, name);
 
 		if (RegOpenKeyEx(HKEY_CURRENT_USER, (LPCTSTR)skey, 0, KEY_ALL_ACCESS, &hkey2) == ERROR_SUCCESS)
 		{
@@ -110,9 +110,9 @@ BOOL ProtectedStorage::EnumOutlookExpressAccounts(void)
 					OutlookData += (m_nOutlookCount - 1);
 				}
 
-				strcpy(OutlookData->POPuser,(char*)Data);
+				strcpy_s(OutlookData->POPuser, sizeof(Data), (char*)Data);
 				ZeroMemory(Data, sizeof(Data));
-				strcpy(OutlookData->POPserver, "Hotmail");
+				strcpy_s(OutlookData->POPserver, 7, "Hotmail");
 				size = sizeof(Data);
 				if(RegQueryValueEx(hkey2, "HTTPMail Password2" , 0, &type, Data1, &size) == ERROR_SUCCESS)
 				{
@@ -280,10 +280,10 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 					wsprintf(szItemData, "%s", psData);				  
 				}	
 
-				strcpy(szResName, "");
-				strcpy(szResData, "");
+				strcpy_s(szResName, 512, "");
+				strcpy_s(szResData, 512, "");
 
-				if(stricmp(szItemGUID, "220d5cc1") == 0)
+				if(_stricmp(szItemGUID, "220d5cc1") == 0)
 				{
 					// GUIDs beginning with "220d5cc1" are Outlook Express
 					BOOL bDeletedOEAccount = TRUE;		
@@ -300,11 +300,11 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 					if(bDeletedOEAccount)
 						printf(OUTPUT_FORMAT, szItemName, "Deleted Outlook Express Account", m_pOutlookDataHead[i].POPuser, szItemData);
 				}				 
-				else if(stricmp(szItemGUID, "5e7e8100") == 0)
+				else if(_stricmp(szItemGUID, "5e7e8100") == 0)
 				{				  
 					// GUIDs beginning with 5e7e8100 are IE password-protected sites
 
-					strcpy(szTemp, "");
+					strcpy_s(szTemp, 512, "");
 
 					// If the item begins with DPAPI, it has been protected using the CryptProtectData call.
 					// Decrypt it using the opposite call. This is a HUGE assumption on my part, but so far
@@ -325,17 +325,17 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 								if (nPos > 0 && nPos < strlen(szItemName + 13))
 								{
 									// Found the @ sign - copy everything between ftp:// and the @ sign
-									strncpy(szUser, szItemName + 13, nPos);
+									strncpy_s(szUser, 200, szItemName + 13, nPos);
 								}
 								else
 								{
-									strcpy(szUser, szItemName + 13);
+									strcpy_s(szUser, 200, szItemName + 13);
 								}
 							}
 							else
 							{
 								// Just copy user name verbatim I guess
-								strcpy(szUser, szItemName);
+								strcpy_s(szUser, 200, szItemName);
 							}
 
 							printf(OUTPUT_FORMAT, szItemName, "IE Password-Protected Site", szUser, szDecryptedPassword);
@@ -349,13 +349,13 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 					}
 					else if(strstr(szItemData, ":") != 0)
 					{
-						strcpy(szTemp, strstr(szItemData, ":") + 1);
+						strcpy_s(szTemp, 512, strstr(szItemData, ":") + 1);
 						*(strstr(szItemData, ":")) = 0;				  
 						printf(OUTPUT_FORMAT, szItemName, "IE Password-Protected Site", szItemData, szTemp);
 					}
 
 				}
-				else if(stricmp(szItemGUID, "b9819c52") == 0)
+				else if(_stricmp(szItemGUID, "b9819c52") == 0)
 				{
 					// GUIDs beginning with b9819c52 are MSN Explorer Signup
 					char msnid[100];
@@ -386,13 +386,13 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 					//psData[4] - number of msn accounts 
 					for(int ii = 0; ii < psData[4]; ii++)
 					{
-						strcpy(msnid, p + 1);
+						strcpy_s(msnid, 100, p + 1);
 
 						if(strstr(msnid,",") != 0) 
 							*strstr(msnid,",") = 0;
 
 						if(strstr(p + 1, ",") != 0)
-							strcpy(msnpass, strstr(p + 1, ",") + 2);	
+							strcpy_s(msnpass, 100, strstr(p + 1, ",") + 2);	
 
 						if(strstr(msnpass, ",") != 0) 
 							*strstr(msnpass, ",") = 0;	
@@ -402,7 +402,7 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 						printf(OUTPUT_FORMAT, msnid, "MSN Explorer Signup", msnid, msnpass);
 					}
 				}
-				else if(stricmp(szItemGUID, "e161255a") == 0)
+				else if(_stricmp(szItemGUID, "e161255a") == 0)
 				{
 					// GUIDs beginning with e161255a are other stored IE credentials 
 					if(strstr(szItemName, "StringIndex") == 0)
@@ -410,15 +410,15 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 						if(strstr(szItemName, ":String") != 0) 
 							*strstr(szItemName, ":String") = 0;
 
-						strncpy(szTemp, szItemName, 8);			  
+						strncpy_s(szTemp, 512, szItemName, 8);			  
 						if((strstr(szTemp, "http:/") == 0) && (strstr(szTemp, "https:/") == 0))
 							printf(OUTPUT_FORMAT, szItemName, "IE Auto Complete Fields", szItemData, "");
 						else
 						{
-							strcpy(szTemp, "");
+							strcpy_s(szTemp, 512, "");
 							if(strstr(szItemData, ",") != 0)
 							{
-								strcpy(szTemp, strstr(szItemData, ",") + 1);
+								strcpy_s(szTemp, 512, strstr(szItemData, ",") + 1);
 								*(strstr(szItemData, ",")) = 0;				  
 							}
 					
@@ -426,17 +426,17 @@ BOOL ProtectedStorage::EnumProtectedStorage(void)
 						}
 					}
 				}
-				else if(stricmp(szItemGUID, "89c39569") == 0)
+				else if(_stricmp(szItemGUID, "89c39569") == 0)
 				{
 					// IdentitiesPass info. It's already been displayed, so just supress these
 				}
 				else
 				{
 					// Catch-all for miscellaneous data
-					strcpy(szTemp, "");
+					strcpy_s(szTemp, 512, "");
 					if(strstr(szItemData, ":") != 0)
 					{
-						strcpy(szTemp, strstr(szItemData, ":") + 1);
+						strcpy_s(szTemp, 512, strstr(szItemData, ":") + 1);
 						*(strstr(szItemData, ":")) = 0;				  
 					}
 
@@ -466,7 +466,7 @@ char* ProtectedStorage::DecryptData(int nDataLen, BYTE* pData)
 	{
 		pReturn = (char*)malloc(DataOut.cbData + 1);
 		memset(pReturn, 0, DataOut.cbData + 1);
-		_snprintf(pReturn, DataOut.cbData, "%S", DataOut.pbData);
+		_snprintf_s(pReturn, DataOut.cbData, sizeof(DataOut.pbData), "%S", DataOut.pbData);
 
 		//memcpy(pReturn, DataOut.pbData, DataOut.cbData);
 		//pReturn[DataOut.cbData + 1] = 0;
@@ -510,9 +510,9 @@ BOOL ProtectedStorage::EnumerateIdentities(void)
 
 	while(nEnumResult != ERROR_NO_MORE_ITEMS)
 	{
-		strncpy(skey, IDENTITIES_KEY, MAX_KEY_SIZE - strlen(IDENTITIES_KEY) - 2);
-		strcat(skey, "\\");
-		strcat(skey, name);
+		strncpy_s(skey, MAX_KEY_SIZE, IDENTITIES_KEY, MAX_KEY_SIZE - strlen(IDENTITIES_KEY) - 2);
+		strcat_s(skey, MAX_KEY_SIZE, "\\");
+		strcat_s(skey, MAX_KEY_SIZE, name);
 
 		lResult = RegOpenKeyEx(HKEY_CURRENT_USER, (LPCTSTR)skey, 0, KEY_ALL_ACCESS, &hkey2);
 		if (lResult == ERROR_SUCCESS)

@@ -68,12 +68,12 @@ int _tmain(int argc, char* argv[])
 			case 'u':
 				szUserToImpersonate = (char*)malloc(strlen(optarg) + 1);
 				memset(szUserToImpersonate, 0, strlen(optarg) + 1);
-				strncpy(szUserToImpersonate, optarg, strlen(optarg));
+				strncpy_s(szUserToImpersonate, strlen(optarg), optarg, strlen(optarg));
 				break;
 			case 'p':
 				szPassword = (char*)malloc(strlen(optarg) + 1);
 				memset(szPassword, 0, strlen(optarg) + 1);
-				strncpy(szPassword, optarg, strlen(optarg));
+				strncpy_s(szPassword, strlen(optarg), optarg, strlen(optarg));
 				break;
 			default:
 				printf("Ignoring unknown option '%c'\n", c);

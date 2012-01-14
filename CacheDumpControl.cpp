@@ -51,19 +51,19 @@ bool CacheDumpControl::Execute(const char* lpszPSExecPath, const char* lpszDumpP
 		nArgSize = _scprintf(lpszCmdLineFormat, lpszDumpPath);
 		lpszStopCmdLine = new char[nArgSize + 1];
 		memset(lpszStopCmdLine, 0, nArgSize + 1);
-		_snprintf(lpszStopCmdLine, nArgSize, lpszCmdLineFormat, lpszDumpPath);
+		_snprintf_s(lpszStopCmdLine, nArgSize, strlen(lpszDumpPath), lpszCmdLineFormat, lpszDumpPath);
 
 		// Now set the parameters
 		lpszCmdLineFormat = " -v";
 		lpszParams = new char[nArgSize + 1];
 		memset(lpszParams, 0, nArgSize + 1);
-		_snprintf(lpszParams, nArgSize, lpszCmdLineFormat);
+		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-2, lpszCmdLineFormat);
 	}
 	else
 	{
 		lpszStopCmdLine = new char[strlen(lpszPSExecPath) + 1];
 		memset(lpszStopCmdLine, 0, strlen(lpszPSExecPath) + 1);
-		strncpy(lpszStopCmdLine, lpszPSExecPath, strlen(lpszPSExecPath));
+		strncpy_s(lpszStopCmdLine, strlen(lpszPSExecPath) + 1, lpszPSExecPath, strlen(lpszPSExecPath));
 
 		if (!bIs64Bit)
 			lpszCmdLineFormat = " -c -n %s %s \"%s\\cachedump.exe\" -v";
@@ -73,7 +73,7 @@ bool CacheDumpControl::Execute(const char* lpszPSExecPath, const char* lpszDumpP
 		nArgSize = _scprintf(lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
 		lpszParams = new char[nArgSize + 1];
 		memset(lpszParams, 0, nArgSize + 1);
-		_snprintf(lpszParams, nArgSize, lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
+		_snprintf_s(lpszParams, nArgSize, strlen(lpszCmdLineFormat)-4+strlen(lpszPipeName)+strlen(lpszMachine)+strlen(lpszDumpPath), lpszCmdLineFormat, lpszPipeName, lpszMachine, lpszDumpPath);
 	}
 
 	try
@@ -107,7 +107,7 @@ bool CacheDumpControl::Execute(const char* lpszPSExecPath, const char* lpszDumpP
 					size_t nLen = strlen(lpszMachine) + 10;		// 10 chars accounts for ".cachedump" extension
 					char* szTempFilename = new char[nLen + 1];
 					memset(szTempFilename, 0, nLen + 1);
-					_snprintf(szTempFilename, nLen, "%s.cachedump", lpszMachine);
+					_snprintf_s(szTempFilename, nLen, strlen(lpszMachine)+10, "%s.cachedump", lpszMachine);
 
 					std::ofstream outputFile(szTempFilename, std::ios::out | std::ios::trunc);
 					outputFile.write((const char*)szResult, (DWORD)strlen(szResult));
