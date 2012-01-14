@@ -38,9 +38,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 #include "md5.h"
 #include "rc4.h"
-
 #include "cachedump.h"
 
 #pragma comment(lib, "Advapi32.lib" )
